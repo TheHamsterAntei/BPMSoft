@@ -13,35 +13,35 @@ namespace Terrasoft.Configuration.AccountService
   using Terrasoft.Web.Common;
   using Terrasoft.Core.Entities;
 
-    [ServiceContract]
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
-    public class AccountService: BaseService
-    {
-		  private SystemUserConnection _systemUserConnection;
-      private SystemUserConnection SystemUserConnection {
-        get {
-          return _systemUserConnection ?? (_systemUserConnection = (SystemUserConnection)AppConnection.SystemUserConnection);
-        }
-      }
-		
-      [OperationContract]
-      [WebInvoke(Method = "GET", RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped,
-      ResponseFormat = WebMessageFormat.Json)]
-      public string AccountRequest(string sub) {
-        SessionHelper.SpecifyWebOperationIdentity(HttpContextAccessor.GetInstance(), SystemUserConnection.CurrentUser);
-  			try
-  			{
-  				var select_accounts = new Select(SystemUserConnection)
-  						.Column(Func.Count("Name")).As("AccountCount")
-  					.From("Account")
-  					.Where("Name").ConsistsWith(Column.Parameter(sub)) as Select;
-  				var cnt = select_accounts.ExecuteScalar<string>();
-  				return cnt;
-  			}
-  			catch (Exception e)
-  			{
-  				return e.ToString();
-  			}
-      }
-	  }
+	[ServiceContract]
+	[AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
+	public class AccountService: BaseService
+	{
+		private SystemUserConnection _systemUserConnection;
+		private SystemUserConnection SystemUserConnection {
+			get {
+				return _systemUserConnection ?? (_systemUserConnection = (SystemUserConnection)AppConnection.SystemUserConnection);
+			}
+		}
+	
+		[OperationContract]
+		[WebInvoke(Method = "GET", RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped,
+		ResponseFormat = WebMessageFormat.Json)]
+		public string AccountRequest(string sub) {
+			SessionHelper.SpecifyWebOperationIdentity(HttpContextAccessor.GetInstance(), SystemUserConnection.CurrentUser);
+			try
+			{
+				var select_accounts = new Select(SystemUserConnection)
+						.Column(Func.Count("Name")).As("AccountCount")
+					.From("Account")
+					.Where("Name").ConsistsWith(Column.Parameter(sub)) as Select;
+				var cnt = select_accounts.ExecuteScalar<string>();
+				return cnt;
+			}
+			catch (Exception e)
+			{
+				return e.ToString();
+			}
+		}
+	}
 }
